@@ -1,0 +1,497 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.geometry.Pos;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import java.util.Optional;
+import java.util.List;
+import java.util.Arrays;
+import javafx.scene.layout.HBox;
+import java.util.stream.Collectors;
+import javafx.scene.control.cell.PropertyValueFactory;
+import java.util.Random;
+import java.util.Set;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
+import javafx.scene.text.Font;
+
+public class MightyAirline extends Application {
+
+    private ObservableList<User> userList = FXCollections.observableArrayList();
+    private ListView<User> userListView;
+    
+    private ObservableList<Flight> flights = FXCollections.observableArrayList();
+    private TableView<Flight> table = new TableView<>();
+
+
+    private TextField nameTextField;
+    private TextField ageTextField;
+    private TextField toTextField;
+    private TextField fromTextField;
+    
+
+    private Scene loginScene;
+    private Scene userScene;
+    private Scene flightsearch;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        primaryStage.setTitle("Flight Booking App");
+
+        // Create a GridPane layout
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 20, 20, 20));
+        grid.setVgap(10);
+        grid.setHgap(10);
+        
+        // Create sample flight data
+        flights.add(new Flight("06:30", "2023-11-16", "Bangalore", "Delhi", 6500));
+        flights.add(new Flight("12:30", "2023-11-16", "Bangalore", "Delhi", 5500));
+        flights.add(new Flight("16:45", "2023-11-16", "Bangalore", "Delhi", 6700));
+        flights.add(new Flight("20:55", "2023-11-16", "Bangalore", "Delhi", 7500));
+        
+        flights.add(new Flight("06:30", "2023-11-16", "Bangalore", "Chandigarh", 6000));
+        flights.add(new Flight("12:30", "2023-11-16", "Bangalore", "Chandigarh", 5000));
+        flights.add(new Flight("16:45", "2023-11-16", "Bangalore", "Chandigarh", 6200));
+        flights.add(new Flight("20:55", "2023-11-16", "Bangalore", "Chandigarh", 7000));
+
+        flights.add(new Flight("06:30", "2023-11-16", "Bangalore", "Hyderabad", 6100));
+        flights.add(new Flight("12:30", "2023-11-16", "Bangalore", "Hyderabad", 5100));
+        flights.add(new Flight("16:45", "2023-11-16", "Bangalore", "Hyderabad", 6300));
+        flights.add(new Flight("20:55", "2023-11-16", "Bangalore", "Hyderabad", 7100));
+
+        flights.add(new Flight("06:30", "2023-11-16", "Bangalore", "Chennai", 6200));
+        flights.add(new Flight("12:30", "2023-11-16", "Bangalore", "Chennai", 5200));
+        flights.add(new Flight("16:45", "2023-11-16", "Bangalore", "Chennai", 6400));
+        flights.add(new Flight("20:55", "2023-11-16", "Bangalore", "Chennai", 7200));
+
+        flights.add(new Flight("06:30", "2023-11-16", "Bangalore", "Kolkata", 6300));
+        flights.add(new Flight("12:30", "2023-11-16", "Bangalore", "Kolkata", 5300));
+        flights.add(new Flight("16:45", "2023-11-16", "Bangalore", "Kolkata", 6500));
+        flights.add(new Flight("20:55", "2023-11-16", "Bangalore", "Kolkata", 7300));
+
+
+        
+        flights.add(new Flight("06:30", "2023-11-16", "Delhi", "Mumbai", 7600));
+        flights.add(new Flight("12:30", "2023-11-16", "Delhi", "Mumbai", 7600));
+        flights.add(new Flight("16:45", "2023-11-16", "Delhi", "Mumbai", 7600));
+        flights.add(new Flight("20:55", "2023-11-16", "Delhi", "Mumbai", 7600));
+        
+        flights.add(new Flight("06:30", "2023-11-17", "Hydrabad", "Chandigarh", 8300));
+        flights.add(new Flight("12:30", "2023-11-17", "Hydrabad", "Chandigarh", 8300));
+        flights.add(new Flight("16:45", "2023-11-17", "Hydrabad", "Chandigarh", 8300));
+        flights.add(new Flight("20:55", "2023-11-17", "Hydrabad", "Chandigarh", 8300));
+        
+        flights.add(new Flight("06:30", "2023-11-17", "Chandigarh", "Bangalore", 10900));
+        flights.add(new Flight("12:30", "2023-11-17", "Chandigarh", "Bangalore", 10900));
+        flights.add(new Flight("16:45", "2023-11-17", "Chandigarh", "Bangalore", 10900));
+        flights.add(new Flight("20:55", "2023-11-17", "Chandigarh", "Bangalore", 10900));
+        
+
+        flights.add(new Flight("06:30", "2023-11-20", "Chennai","Kolkata", 5300));
+        flights.add(new Flight("12:30", "2023-11-20", "Chennai","Kolkata", 5300));
+        flights.add(new Flight("16:45", "2023-11-20", "Chennai","Kolkata", 5300));
+        flights.add(new Flight("20:55", "2023-11-20", "Chennai","Kolkata", 5300));
+        
+        flights.add(new Flight("06:30", "2023-11-21", "Mumbai","Bangalore", 6900));
+        flights.add(new Flight("12:30", "2023-11-21", "Mumbai","Bangalore", 6900));
+        flights.add(new Flight("16:45", "2023-11-21", "Mumbai","Bangalore", 6900));
+        flights.add(new Flight("20:55", "2023-11-21", "Mumbai","Bangalore", 6900));
+        
+        flights.add(new Flight("06:30", "2023-11-22", "Kolkata","Delhi", 7100));
+        flights.add(new Flight("12:30", "2023-11-22", "Kolkata","Delhi", 7100));
+        flights.add(new Flight("16:45", "2023-11-22", "Kolkata","Delhi", 7100));
+        flights.add(new Flight("20:55", "2023-11-22", "Kolkata","Delhi", 7100));
+        
+        flights.add(new Flight("06:30", "2023-11-16", "Chandigarh", "Delhi", 6000));
+        flights.add(new Flight("12:30", "2023-11-16", "Chandigarh", "Delhi", 5000));
+        flights.add(new Flight("16:45", "2023-11-16", "Chandigarh", "Delhi", 6200));
+        flights.add(new Flight("20:55", "2023-11-16", "Chandigarh", "Delhi", 7000));
+
+        flights.add(new Flight("06:30", "2023-11-16", "Hyderabad", "Delhi", 6100));
+        flights.add(new Flight("12:30", "2023-11-16", "Hyderabad", "Delhi", 5100));
+        flights.add(new Flight("16:45", "2023-11-16", "Hyderabad", "Delhi", 6300));
+        flights.add(new Flight("20:55", "2023-11-16", "Hyderabad", "Delhi", 7100));
+
+        flights.add(new Flight("06:30", "2023-11-16", "Chennai", "Delhi", 6200));
+        flights.add(new Flight("12:30", "2023-11-16", "Chennai", "Delhi", 5200));
+        flights.add(new Flight("16:45", "2023-11-16", "Chennai", "Delhi", 6400));
+        flights.add(new Flight("20:55", "2023-11-16", "Chennai", "Delhi", 7200));
+
+        flights.add(new Flight("06:30", "2023-11-16", "Kolkata", "Delhi", 6300));
+        flights.add(new Flight("12:30", "2023-11-16", "Kolkata", "Delhi", 5300));
+        flights.add(new Flight("16:45", "2023-11-16", "Kolkata", "Delhi", 6500));
+        flights.add(new Flight("20:55", "2023-11-16", "Kolkata", "Delhi", 7300));
+        
+
+
+        // Create UI components
+        Label nameLabel = new Label("Name:");
+        nameTextField = new TextField();
+
+        Label ageLabel = new Label("Age:");
+        ageTextField = new TextField();
+
+        Label fromLabel = new Label("From:");
+        fromTextField = new TextField();
+        
+        Label titleLabel = new Label("MightyAirline");
+        titleLabel.setFont(new Font("Arial", 34)); // Set the font size
+
+        //ComboBox<String> comboBox1 = new ComboBox<>();
+        //comboBox1.getItems().addAll("Bangalore", "Chandigarh", "Hydrabad", "Channai", "Kolkata", "Delhi");
+
+
+        Label toLabel = new Label("To:");
+        toTextField = new TextField();
+
+        //ComboBox<String> comboBox2 = new ComboBox<>();
+        //comboBox2.getItems().addAll("Bangalore", "Chandigarh", "Hydrabad", "Channai", "Kolkata", "Delhi");
+
+         Button submitButton = new Button("Submit");
+        submitButton.setOnAction(e -> {
+                    addUser(nameTextField.getText(), ageTextField.getText(), fromTextField.getText(), toTextField.getText());
+                    validateLocation( fromTextField.getText() ); } );
+
+        userListView = new ListView<>(userList);
+
+        Button displayAllButton = new Button("Display All Users");
+        displayAllButton.setOnAction(e -> displayAllUsers());
+        
+        Button displayTimings = new Button("Flight Timings");
+        displayTimings.setOnAction(e -> displayOptions());
+        
+        Button displaySeats = new Button("The available seats are: ");
+        displaySeats.setOnAction(e -> displayOptions2());
+        
+        //Button displayDate = new Button("Select the date for travelling: ");
+        //displayDate.setOnAction(e -> displayOptions3());
+        
+        Button displayPayment = new Button("Select the method of payment: ");
+        displayPayment.setOnAction(e -> displayOptions4());
+        
+        Button flightsButton = new Button("Search Flights ");
+        flightsButton.setOnAction(e -> primaryStage.setScene(flightsearch));
+        
+        TextField timeInput = new TextField();
+        timeInput.setPromptText("Enter time");
+        
+        TextField dateInput = new TextField();
+        dateInput.setPromptText("Enter date");
+        
+        TextField destinationInput = new TextField();
+        destinationInput.setPromptText("Enter destination");
+        
+        Button searchButton = new Button("Search");
+        searchButton.setOnAction(e -> searchFlights(timeInput.getText(), dateInput.getText(), destinationInput.getText()));
+        
+        Button BackButton = new Button("Back");
+        BackButton.setOnAction(e -> primaryStage.setScene(userScene));
+        
+        TableColumn<Flight, String> timeCol = new TableColumn<>("Time");
+        timeCol.setCellValueFactory(new PropertyValueFactory<>("time"));
+        
+        TableColumn<Flight, String> dateCol = new TableColumn<>("Date");
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        
+        TableColumn<Flight, String> originCol = new TableColumn<>("Origin");
+        originCol.setCellValueFactory(new PropertyValueFactory<>("origin"));
+        
+        
+        TableColumn<Flight, String> destinationCol = new TableColumn<>("Destination");
+        destinationCol.setCellValueFactory(new PropertyValueFactory<>("destination"));
+        
+        //TableColumn<Flight, String> priceCol = new TableColumn<>("Price");
+        //destinationCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        
+        table.getColumns().addAll(timeCol, dateCol, originCol, destinationCol);
+
+
+
+        
+        // Create login scene
+        VBox loginBox = new VBox();
+        loginBox.setPadding(new Insets(20, 20, 20, 20));
+        loginBox.setSpacing(10);
+
+        Label loginLabel = new Label("Login");
+        TextField usernameField = new TextField();
+        PasswordField passwordField = new PasswordField();
+        Button loginButton = new Button("Login");
+        loginButton.setOnAction(e -> {
+            if (validateLogin(usernameField.getText(), passwordField.getText())) {
+                primaryStage.setScene(userScene);
+            } else {
+                showAlert("Invalid username or password.");
+            }
+        });
+
+        loginBox.getChildren().addAll(loginLabel, usernameField, passwordField, loginButton);
+        loginScene = new Scene(loginBox, 300, 200);
+        
+        // Set up the JavaFX scene
+        VBox root = new VBox(10, timeInput, dateInput, destinationInput, searchButton,BackButton, table);
+        //root.getChildren().addAll(timeInput,dateInput,destinationInput,searchButton);
+        flightsearch = new Scene(root, 400, 300);
+    
+     
+        
+
+        // Add components to the grid
+        grid.add(nameLabel, 0, 0);
+        grid.add(nameTextField, 1, 0);
+        grid.add(ageLabel, 0, 1);
+        grid.add(ageTextField, 1, 1);
+        grid.add(fromLabel, 0, 2);
+        
+        grid.add(fromTextField, 1, 2);
+        grid.add(toLabel, 0, 3);
+        grid.add(toTextField,1,3);
+       
+        grid.add(submitButton, 0, 4);
+        grid.add(userListView, 1, 4);
+        grid.add(displayAllButton, 0, 5);
+
+        // Create user scene
+        VBox userBox = new VBox();
+        userBox.setPadding(new Insets(20, 20, 20, 20));
+        userBox.setSpacing(10);
+        
+
+        userBox.getChildren().addAll(titleLabel, flightsButton,nameLabel,nameTextField,ageLabel,ageTextField, fromLabel, fromTextField, toLabel,toTextField, displayTimings, displaySeats, displayPayment, submitButton,userListView, displayAllButton );
+        userScene = new Scene(userBox, 1000, 800);
+
+        // Set the login scene as the initial scene
+        primaryStage.setScene(loginScene);
+        primaryStage.show();
+    }
+
+    private boolean validateLogin(String username, String password) {
+        // Replace with actual validation logic
+        return username.equals("admin") && password.equals("password");
+    }
+
+    private void addUser(String name, String ageText, String place1, String place2) {
+        if (name.isEmpty() || ageText.isEmpty()) {
+            showAlert("Please enter all your details");
+            return;
+        }
+
+        try {
+            int age = Integer.parseInt(ageText);
+            User newUser = new User(name, age, place1, place2);
+            userList.add(newUser);
+        } catch (NumberFormatException e) {
+            showAlert("Please enter a valid age.");
+        }
+    }
+
+    private void displayAllUsers() {
+        if (userList.isEmpty()) {
+            showAlert("No users to display.");
+        } else {
+            StringBuilder details = new StringBuilder("All Users:\n");
+            for (User user : userList) {
+                details.append(user).append("\n");
+            }
+            showAlert(details.toString());
+        }
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    
+    private void displayOptions() {
+    List<String> options = List.of("06:30", "12:30", "16:45", "20:55");
+
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(options.get(0), options);
+    dialog.setTitle("Select a timing");
+    dialog.setHeaderText(null);
+    dialog.setContentText("Choose an option:");
+
+    Optional<String> result = dialog.showAndWait();
+
+    result.ifPresent(selectedOption -> showAlert("Selected Timing: " + selectedOption));
+}
+
+private void displayOptions2() {
+    List<String> options = List.of("2A", "3A", "3E", "4A","4B","6C","7B","7F","9D");
+
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(options.get(0), options);
+    dialog.setTitle("Select a seat");
+    dialog.setHeaderText(null);
+    dialog.setContentText("Choose an option:");
+
+    Optional<String> result = dialog.showAndWait();
+
+    result.ifPresent(selectedOption -> showAlert("Selected Seat: " + selectedOption + ".\nThe Price is: " + getRandomNumber(6000, 15000) + " Rupees" ));
+}
+
+private void displayOptions4() {
+    List<String> options = Arrays.asList("UPI", "Paytm", "Debit card", "Credit card");
+
+    HBox optionBox = new HBox(10);
+    optionBox.setAlignment(Pos.CENTER);
+
+    for (String option : options) {
+        Button optionButton = new Button(option);
+        optionButton.setOnAction(e -> {
+            Task<Void> paymentTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    // Simulate processing payment for 5000ms
+                    Thread.sleep(5000);
+                    return null;
+                }
+            };
+
+            paymentTask.setOnSucceeded(event -> {
+                // Show payment completion message in a dialog box
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("Payment completed");
+                    alert.showAndWait();
+                });
+            });
+
+            // Start the payment task in a new thread
+            new Thread(paymentTask).start();
+        });
+        optionBox.getChildren().add(optionButton);
+    }
+    Dialog dialog = new Dialog();
+    //dialog.getDialogPane().setContent(vbox);
+    dialog.setTitle("Payment Options");
+    dialog.getDialogPane().setContent(optionBox);
+    dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+    dialog.showAndWait();}
+
+
+
+
+
+private void searchFlights(String time, String date, String destination) {
+        ObservableList<Flight> searchResults = FXCollections.observableArrayList(
+                flights.stream()
+                        .filter(flight -> flight.getTime().equals(time) || time.isEmpty())
+                        .filter(flight -> flight.getDate().equals(date) || date.isEmpty())
+                        .filter(flight -> flight.getDestination().equalsIgnoreCase(destination) || destination.isEmpty())
+                        .collect(Collectors.toList())
+        );
+        table.setItems(searchResults);
+    }
+    private void validateLocation(String location) {
+        // Define a set of valid locations
+        String[] validLocations = {"Mumbai", "Delhi", "Bangalore", "Chennai", "Hyderabad"};
+
+        try {
+            // Check if the entered location is valid
+            boolean isValid = false;
+            for (String validLocation : validLocations) {
+                if (validLocation.equalsIgnoreCase(location)) {
+                    isValid = true;
+                    break;
+                }
+            }
+
+            // Create an Alert box
+            Alert alert = new Alert(isValid ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+            alert.setTitle("Location Validation");
+
+            // Set the content text based on validation result
+            if (isValid) {
+                alert.setHeaderText("Booking Status");
+                alert.setContentText("Booking Confirmed");
+            } else {
+                throw new IllegalArgumentException("Invalid Location");
+            }
+
+            // Show the Alert box
+            alert.showAndWait();
+
+        } catch (IllegalArgumentException ex) {
+            // Handle the exception for invalid location
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Location Validation");
+            alert.setHeaderText("Invalid Location");
+            alert.setContentText("Entered location is not in the list of valid locations.");
+            alert.showAndWait();
+        }
+    }
+    
+public static int getRandomNumber(int min, int max) {
+        Random random = new Random();
+        return random.nextInt(max - min + 1) + min;
+    }
+
+    public class Flight {
+    private final String time;
+    private final String date;
+    private final String destination;
+    private final String origin;
+    private final int price; 
+
+    public Flight(String time, String date, String destination,String origin, int price) {
+        this.time = time;
+        this.date = date;
+        this.destination = destination;
+        this.origin = origin;
+        this.price = price;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+    
+    public String getOrigin(){
+        return origin;
+    }
+    
+    public int getPrice(){
+        return price;
+    }
+}
+
+    private static class User {
+        private String name, place1, place2;
+        private int age;
+
+        public User(String name, int age, String place1, String place2) {
+            this.name = name;
+            this.age = age;
+            this.place1 = place1;
+            this.place2 = place2;
+        }
+
+        @Override
+        public String toString() {
+            return "Name: " + name + "| Age: " + age + " | " + place1 + " to " + place2;
+        }
+    }
+}
+
